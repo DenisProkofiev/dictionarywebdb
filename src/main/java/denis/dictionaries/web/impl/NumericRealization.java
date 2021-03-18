@@ -1,6 +1,6 @@
 package denis.dictionaries.web.impl;
 
-import denis.dictionaries.web.dao.KeyRepository;
+import denis.dictionaries.web.dao.NumericKeyRepository;
 import denis.dictionaries.web.entity.NumericKey;
 import denis.dictionaries.web.enums.DictionaryType;
 import denis.dictionaries.web.exception.NotRightLengthWordsException;
@@ -13,7 +13,7 @@ public class NumericRealization extends AbstractDictionary<NumericKey> {
     public static final String NUMBER_PATTERN = "^[0-9]+$";
 
 
-    public NumericRealization(KeyRepository<NumericKey> repository) {
+    public NumericRealization(NumericKeyRepository repository) {
         super(repository);
     }
 
@@ -40,12 +40,9 @@ public class NumericRealization extends AbstractDictionary<NumericKey> {
         return false;
     }
 
-    public static int getKeyAndValueSize() {
-        return KEY_AND_VALUE_SIZE;
-    }
-
-    public static String getNumberPattern() {
-        return NUMBER_PATTERN;
+    @Override
+    public NumericKey getAbstractKey() {
+        return new NumericKey();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package denis.dictionaries.web.impl;
 
-import denis.dictionaries.web.dao.KeyRepository;
+import denis.dictionaries.web.dao.LatinKeyRepository;
 import denis.dictionaries.web.entity.LatinKey;
 import denis.dictionaries.web.enums.DictionaryType;
 import denis.dictionaries.web.exception.NotRightLengthWordsException;
@@ -13,7 +13,7 @@ public class LatinRealization extends AbstractDictionary<LatinKey> {
     public static final String LATIN_PATTERN = "^[a-zA-Z0-9]+$";
 
 
-    public LatinRealization(KeyRepository<LatinKey> repository) {
+    public LatinRealization(LatinKeyRepository repository) {
         super(repository);
     }
 
@@ -40,12 +40,9 @@ public class LatinRealization extends AbstractDictionary<LatinKey> {
         return false;
     }
 
-    public static int getKeyAndValueSize() {
-        return KEY_AND_VALUE_SIZE;
-    }
-
-    public static String getLatinPattern() {
-        return new String(LATIN_PATTERN);
+    @Override
+    public LatinKey getAbstractKey() {
+        return new LatinKey();
     }
 
     @Override

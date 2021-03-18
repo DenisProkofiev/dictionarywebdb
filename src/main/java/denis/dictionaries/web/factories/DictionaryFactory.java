@@ -4,8 +4,8 @@ import denis.dictionaries.web.enums.DictionaryType;
 import denis.dictionaries.web.interfaces.Dictionary;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -19,12 +19,16 @@ public class DictionaryFactory {
     }
 
     public Dictionary getDictionary(String implementation) {
-        DictionaryType dictionaryType = DictionaryType.valueOf(implementation.toUpperCase(Locale.ROOT));
+        DictionaryType dictionaryType = DictionaryType.valueOf(implementation.toUpperCase());
         return getDictionary(dictionaryType);
     }
 
     public Dictionary getDictionary(DictionaryType implementation) {
         return dictionaryMap.get(implementation);
+    }
+
+    public List<Dictionary> getAllDictionary() {
+        return new ArrayList<>(dictionaryMap.values());
     }
 
 }

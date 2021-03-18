@@ -1,8 +1,11 @@
 package denis.dictionaries.web.contollers;
 
+import denis.dictionaries.web.entity.AbstractKey;
 import denis.dictionaries.web.factories.DictionaryFactory;
+import denis.dictionaries.web.interfaces.Dictionary;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController("/")
@@ -15,15 +18,24 @@ public class DictionaryController {
     }
 
     @PutMapping(value = "/{dictionaries}/put")
-    public boolean addPair(@PathVariable(name = "dictionaries") String dictionary,
+    public boolean add(@PathVariable(name = "dictionaries") String dictionary,
                            @RequestParam("key") String key,
                            @RequestParam("value") String value) {
-        return dictionaryFactory.getDictionary(dictionary).addPair(key, value);
+        return dictionaryFactory.getDictionary(dictionary).add(key, value);
     }
 
-    @GetMapping(value = "/{dictionaries}/getList")
-    public List getPairList(@PathVariable(name = "dictionaries") String dictionary) {
-        return dictionaryFactory.getDictionary(dictionary).getAll();
+    @GetMapping("/{dictionaries}/getAll")
+    public List<AbstractKey> getOneDictionary (@PathVariable(name = "dictionaries") String dictionary) {
+      return (List) dictionaryFactory.getDictionary(dictionary).getAll();
+    }
+
+    @GetMapping(value = "/getAll")
+    public List<AbstractKey> getAll() {
+        List<AbstractKey> result = new ArrayList<>();
+        for (Dictionary dictionary : dictionaryFactory.getAllDictionary()) {
+          result.addAll(dictionary.getAll());
+        }
+        return result;
     }
 
     @DeleteMapping(value = "/{dictionaries}/remove")
@@ -47,8 +59,8 @@ public class DictionaryController {
         return dictionaryFactory.getDictionary(dictionary).updateValue(key, oldValue, newValue);
     }
 
-    @GetMapping(value = "/{dictionary}/getValues")
-    public List<String> getValues(@PathVariable(name = "dictionaries") String dictionary,
+    @GetMapping(value = "/{dictionaries}/getValues")
+    public List getValues(@PathVariable(name = "dictionaries") String dictionary,
                           @RequestParam String key) {
         return dictionaryFactory.getDictionary(dictionary).getValues(key);
     }

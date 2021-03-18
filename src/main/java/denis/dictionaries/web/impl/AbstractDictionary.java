@@ -2,23 +2,24 @@ package denis.dictionaries.web.impl;
 
 import denis.dictionaries.web.dao.KeyRepository;
 import denis.dictionaries.web.entity.AbstractKey;
-import denis.dictionaries.web.entity.LatinKey;
 import denis.dictionaries.web.entity.Value;
 import denis.dictionaries.web.interfaces.Dictionary;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class AbstractDictionary<T extends AbstractKey> implements Dictionary<T> {
-
-    public abstract boolean dictionaryMatches(String keyCheck, int keyLength);
 
     private KeyRepository<T> repository;
 
     public AbstractDictionary(KeyRepository<T> repository) {
         this.repository = repository;
     }
+
+    public abstract boolean dictionaryMatches(String keyCheck, int keyLength);
+
+    public abstract AbstractKey getAbstractKey();
+
 
     public List<T> getAll() {
         return repository.findAll();
@@ -63,19 +64,23 @@ public abstract class AbstractDictionary<T extends AbstractKey> implements Dicti
         return true;
 
     }
-    @Override
-    public boolean addPair(String key, String value) {
-        AbstractKey abstractKey = repository.findByKey(key);
-        if (abstractKey == null) {
 
+    @Override
+    public boolean add(String key, String value) {
+        AbstractKey abstractKey = repository.findByKey(key);
+
+        if(!dictionaryMatches(key, key.length())) {
+            return false;
+        }
+
+        if (abstractKey == null) {
+            AbstractKey newKey = getAbstractKey();
             Value newValue = new Value();
             newValue.setValue(value);
-
-            AbstractKey newKey = new LatinKey();
             newKey.setKey(key);
-
             newKey.getValues().add(newValue);
             repository.save((T) newKey);
+
             return true;
 
         } else if (abstractKey.getValues().stream().noneMatch(v -> v.getValue().equals(value))) {
@@ -83,7 +88,7 @@ public abstract class AbstractDictionary<T extends AbstractKey> implements Dicti
             newValue.setValue(value);
 
             abstractKey.getValues().add(newValue);
-            repository.save((T)abstractKey);
+            repository.save((T) abstractKey);
             return true;
         }
         return false;
@@ -92,7 +97,6 @@ public abstract class AbstractDictionary<T extends AbstractKey> implements Dicti
     @Override
     public List<String> getValues(String key) {
         AbstractKey abstractKey = repository.findByKey(key);
-        List<String> stringList = new ArrayList<>();
 
         return abstractKey.getValues()
                 .stream().map(Value::getValue)

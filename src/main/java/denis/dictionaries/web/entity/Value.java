@@ -12,7 +12,7 @@ public class Value {
     private Long keyId;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getId() {
         return id;
     }
